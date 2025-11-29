@@ -7,6 +7,7 @@ use App\Http\Controllers\RideController;
 use App\Http\Controllers\PasajeroReservaController;
 use App\Http\Controllers\ChoferReservaController;
 use App\Http\Controllers\AdminUsuarioController;
+use App\Http\Controllers\ProfileController;
 
 
 
@@ -47,10 +48,22 @@ Route::get('/rides-publicos', [PasajeroReservaController::class, 'publicos'])
 // DASHBOARD CHOFER + VEHÍCULOS + RIDES
 // =============================
 
+
 Route::middleware(['auth', 'rol:chofer'])
     ->prefix('chofer')
     ->name('chofer.')
     ->group(function () {
+
+        Route::get('/dashboard', function () {
+            return view('chofer.dashboard');
+        })->name('dashboard');
+
+        // PERFIL CHOFER
+        Route::get('/perfil/editar', [ProfileController::class, 'edit'])
+            ->name('perfil.edit');
+
+        Route::post('/perfil/editar', [ProfileController::class, 'update'])
+            ->name('perfil.update');
 
         // Dashboard principal del chofer
         Route::get('/dashboard', function () {
@@ -63,18 +76,18 @@ Route::middleware(['auth', 'rol:chofer'])
             ->name('vehiculos.index');
 
               // --------- RESERVAS DE MIS RIDES (CHOFER) ---------
-Route::get('/reservas/pendientes', [ChoferReservaController::class, 'pendientes'])
-    ->name('reservas.pendientes');
+        Route::get('/reservas/pendientes', [ChoferReservaController::class, 'pendientes'])
+            ->name('reservas.pendientes');
 
-Route::get('/reservas', [ChoferReservaController::class, 'todas'])
-    ->name('reservas.todas');
+        Route::get('/reservas', [ChoferReservaController::class, 'todas'])
+            ->name('reservas.todas');
 
-// Aceptar / rechazar reserva
-Route::post('/reservas/{reserva}/aceptar', [ChoferReservaController::class, 'aceptar'])
-    ->name('reservas.aceptar');
+        // Aceptar / rechazar reserva
+        Route::post('/reservas/{reserva}/aceptar', [ChoferReservaController::class, 'aceptar'])
+            ->name('reservas.aceptar');
 
-Route::post('/reservas/{reserva}/rechazar', [ChoferReservaController::class, 'rechazar'])
-    ->name('reservas.rechazar');
+        Route::post('/reservas/{reserva}/rechazar', [ChoferReservaController::class, 'rechazar'])
+            ->name('reservas.rechazar');
 
     
         // Form crear
@@ -112,10 +125,21 @@ Route::post('/reservas/{reserva}/rechazar', [ChoferReservaController::class, 're
 // DASHBOARD PASAJERO
 // =============================
 
-Route::middleware(['auth', 'rol:pasajero'])
-    ->prefix('pasajero')
-    ->name('pasajero.')
-    ->group(function () {
+        Route::middleware(['auth', 'rol:pasajero'])
+        ->prefix('pasajero')
+        ->name('pasajero.')
+        ->group(function () {
+
+        Route::get('/dashboard', function () {
+            return view('pasajero.dashboard');
+        })->name('dashboard');
+
+        // PERFIL PASAJERO
+        Route::get('/perfil/editar', [ProfileController::class, 'edit'])
+            ->name('perfil.edit');
+
+        Route::post('/perfil/editar', [ProfileController::class, 'update'])
+            ->name('perfil.update');
 
         // Dashboard principal del pasajero
         Route::view('/dashboard', 'pasajero.dashboard')->name('dashboard');
