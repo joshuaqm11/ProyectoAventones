@@ -26,4 +26,15 @@ class AdminUsuarioController extends Controller
             ->route('admin.usuarios.index')
             ->with('status', 'Estado actualizado correctamente.');
     }
+
+    public function ver()
+    {
+        $usuarios = Usuario::orderBy('tipo')
+            ->orderBy('nombre')
+            ->orderBy('apellido')
+            ->get();
+
+        return view('admin.usuarios.ver', compact('usuarios'));
+    }
+
 }

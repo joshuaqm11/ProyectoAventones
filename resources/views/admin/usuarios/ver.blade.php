@@ -6,18 +6,10 @@
 <div class="auth-card">
 
     <h1 class="brand-title">Usuarios del sistema</h1>
-    <p class="subtitle">
-        Desde aquí puedes activar o desactivar cualquier usuario.
-    </p>
-
-    @if(session('status'))
-        <div class="alert alert-success">{{ session('status') }}</div>
-    @endif
+    <p class="subtitle">Lista completa de usuarios registrados.</p>
 
     @if($usuarios->isEmpty())
-        <div class="alert alert-info small">
-            No hay usuarios registrados.
-        </div>
+        <div class="alert alert-info small">No hay usuarios registrados.</div>
     @else
         <table class="table table-sm table-striped align-middle mt-3">
             <thead>
@@ -27,7 +19,6 @@
                     <th>Correo</th>
                     <th>Tipo</th>
                     <th>Estado</th>
-                    <th style="width: 180px;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,23 +36,6 @@
                             @else
                                 <span class="badge text-bg-warning">Pendiente</span>
                             @endif
-                        </td>
-                        <td>
-                            <form method="POST"
-                                  action="{{ route('admin.usuarios.toggle-estado', $u) }}"
-                                  onsubmit="return confirm('¿Cambiar estado de este usuario?');">
-                                @csrf
-
-                                @if($u->estado === 'activo')
-                                    <button class="btn btn-outline-danger btn-sm">
-                                        Desactivar
-                                    </button>
-                                @else
-                                    <button class="btn btn-outline-success btn-sm">
-                                        Activar
-                                    </button>
-                                @endif
-                            </form>
                         </td>
                     </tr>
                 @endforeach

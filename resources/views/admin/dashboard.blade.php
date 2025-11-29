@@ -38,14 +38,14 @@
                     <h5 class="card-title">Usuarios del sistema</h5>
 
                     <div class="d-flex flex-wrap gap-2 mt-2">
-                        <a href="{{ route('admin.usuarios.index') }}" class="btn btn-outline-secondary btn-sm">
+                        <a href="{{ route('admin.usuarios.ver') }}" class="btn btn-outline-secondary btn-sm">
                             Ver usuarios
                         </a>
-                        <a href="{{ route('admin.usuarios.estado') }}" class="btn btn-outline-success btn-sm">
+
+                        <a href="{{ route('admin.usuarios.index') }}" class="btn btn-outline-success btn-sm">
                             Activar / desactivar usuarios
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>

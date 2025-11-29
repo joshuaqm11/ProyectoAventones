@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RideController;
 use App\Http\Controllers\PasajeroReservaController;
 use App\Http\Controllers\ChoferReservaController;
+use App\Http\Controllers\AdminUsuarioController;
 
 
 
@@ -163,7 +164,21 @@ Route::middleware(['auth', 'rol:admin'])
         Route::get('/usuarios', [AdminUsuarioController::class, 'index'])->name('usuarios.index');
         Route::get('/usuarios/estado', [AdminUsuarioController::class, 'index'])->name('usuarios.estado');
         Route::post('/usuarios/{usuario}/toggle-estado', [AdminUsuarioController::class, 'toggleEstado'])->name('usuarios.toggle-estado');
+
+        // Vista SOLO PARA VER usuarios
+        Route::get('/usuarios/ver', [AdminUsuarioController::class, 'ver'])
+            ->name('usuarios.ver');
+
+        // Vista para activar / desactivar
+        Route::get('/usuarios', [AdminUsuarioController::class, 'index'])
+            ->name('usuarios.index');
+
+        Route::post('/usuarios/{usuario}/toggle-estado', [AdminUsuarioController::class, 'toggleEstado'])
+            ->name('usuarios.toggle-estado');
+
     });
+
+    
 
 
 // =============================
