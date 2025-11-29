@@ -3,18 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Ride;
+use App\Models\Usuario;
 
 class Reserva extends Model
 {
-    use HasFactory;
+    protected $table = 'reservas';
 
     protected $fillable = [
-        'ride_id','pasajero_id','estado','cantidad',
+        'ride_id',
+        'pasajero_id',
+        'estado',
+        'cantidad',
     ];
 
     public function ride()
     {
-        return $this->belongsTo(Ride::class);
+        return $this->belongsTo(Ride::class, 'ride_id');
     }
 
     public function pasajero()
@@ -22,4 +27,3 @@ class Reserva extends Model
         return $this->belongsTo(Usuario::class, 'pasajero_id');
     }
 }
-

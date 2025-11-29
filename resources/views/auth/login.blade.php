@@ -57,5 +57,12 @@
         </a>
     </div>
 
+    {{-- BOTÓN PARA VER RIDES PÚBLICOS --}}
+    <div class="text-center mt-4">
+        <a href="{{ route('rides.publicos') }}" class="btn btn-outline-info btn-sm">
+            Ver rides disponibles
+        </a>
+    </div>
+
 </div>
 @endsection

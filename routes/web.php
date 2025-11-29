@@ -4,6 +4,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VehiculoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RideController;
+use App\Http\Controllers\PasajeroReservaController;
+use App\Http\Controllers\ChoferReservaController;
+
+
 
 // =============================
 // AUTH / LOGIN
@@ -32,6 +36,11 @@ Route::post('/registro/pasajero', [AuthController::class, 'registerPasajero'])->
 // Activación de cuenta (la lógica ya la tienes en el controlador)
 Route::get('/activar/{token}', [AuthController::class, 'activarCuenta'])->name('activar');
 
+// =============================
+// PÁGINA PÚBLICA DE RIDES
+// =============================
+Route::get('/rides-publicos', [PasajeroReservaController::class, 'publicos'])
+    ->name('rides.publicos');
 
 // =============================
 // DASHBOARD CHOFER + VEHÍCULOS + RIDES
@@ -52,6 +61,21 @@ Route::middleware(['auth', 'rol:chofer'])
         Route::get('/vehiculos', [VehiculoController::class, 'index'])
             ->name('vehiculos.index');
 
+              // --------- RESERVAS DE MIS RIDES (CHOFER) ---------
+Route::get('/reservas/pendientes', [ChoferReservaController::class, 'pendientes'])
+    ->name('reservas.pendientes');
+
+Route::get('/reservas', [ChoferReservaController::class, 'todas'])
+    ->name('reservas.todas');
+
+// Aceptar / rechazar reserva
+Route::post('/reservas/{reserva}/aceptar', [ChoferReservaController::class, 'aceptar'])
+    ->name('reservas.aceptar');
+
+Route::post('/reservas/{reserva}/rechazar', [ChoferReservaController::class, 'rechazar'])
+    ->name('reservas.rechazar');
+
+    
         // Form crear
         Route::get('/vehiculos/create', [VehiculoController::class, 'create'])
             ->name('vehiculos.create');
@@ -87,18 +111,35 @@ Route::middleware(['auth', 'rol:chofer'])
 // DASHBOARD PASAJERO
 // =============================
 
-Route::middleware(['auth', 'rol:pasajero'])->group(function () {
+Route::middleware(['auth', 'rol:pasajero'])
+    ->prefix('pasajero')
+    ->name('pasajero.')
+    ->group(function () {
 
-    // Dashboard principal del pasajero
-    Route::get('/pasajero/dashboard', function () {
-        return view('pasajero.dashboard');
-    })->name('pasajero.dashboard');
+        // Dashboard principal del pasajero
+        Route::view('/dashboard', 'pasajero.dashboard')->name('dashboard');
 
-    // Aquí después vas a agregar rutas para:
-    // - búsquedas de rides (rides.publico)
-    // - reservas activas (pasajero.reservas.activas)
-    // - historial de reservas (pasajero.reservas.historial)
-});
+        // Buscar rides disponibles
+        Route::get('/rides', [PasajeroReservaController::class, 'buscarRides'])
+            ->name('rides.buscar');
+
+        // Reservar ride
+        Route::post('/rides/{ride}/reservar', [PasajeroReservaController::class, 'reservar'])
+            ->name('rides.reservar');
+
+        // Reservas activas
+        Route::get('/reservas/activas', [PasajeroReservaController::class, 'reservasActivas'])
+            ->name('reservas.activas');
+
+        // Historial de reservas
+        Route::get('/reservas/historial', [PasajeroReservaController::class, 'reservasHistorial'])
+            ->name('reservas.historial');
+
+        // Cancelar reserva
+        Route::post('/reservas/{reserva}/cancelar', [PasajeroReservaController::class, 'cancelar'])
+            ->name('reservas.cancelar');
+    });
+
 
 // =============================
 // DASHBOARD ADMIN

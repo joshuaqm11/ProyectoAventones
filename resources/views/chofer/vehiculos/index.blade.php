@@ -1,3 +1,8 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
+
 @extends('layouts.app')
 
 @section('title', 'Mis vehículos')
@@ -43,9 +48,10 @@
                     <tr>
                         <td>
                             @if($v->fotografia)
-                                <img src="{{ asset('storage/'.$v->fotografia) }}"
-                                     alt="Foto vehículo"
-                                     style="width:60px; height:40px; object-fit:cover;">
+                                <img src="{{ Storage::url($v->fotografia) }}"
+     alt="Foto vehículo"
+     style="width:60px; height:40px; object-fit:cover;">
+
                             @else
                                 —
                             @endif

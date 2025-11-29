@@ -8,9 +8,18 @@ class Ride extends Model
 {
     protected $table = 'rides';
 
-    // Puedes incluso quitar $fillable si quieres,
-    // porque en store ya no usamos create().
-    protected $fillable = [];
+    // PERMITIMOS la asignación masiva de estos campos
+    protected $fillable = [
+        'usuario_id',
+        'vehiculo_id',
+        'origen',
+        'destino',
+        'fecha',
+        'hora',
+        'precio',
+        'espacios',
+        'estado',
+    ];
 
     public function usuario()
     {

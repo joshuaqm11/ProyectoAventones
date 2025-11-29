@@ -12,7 +12,7 @@
 
     <div class="row g-3 mt-2">
 
-            {{-- Bloque: Vehículos --}}
+        {{-- Bloque: Vehículos --}}
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -33,7 +33,6 @@
             </div>
         </div>
 
-
         {{-- Bloque: Rides --}}
         <div class="col-12">
             <div class="card border-0 shadow-sm">
@@ -44,7 +43,6 @@
                     </p>
 
                     <div class="d-flex flex-wrap gap-2">
-                        {{-- Rutas de rides del chofer --}}
                         <a href="{{ route('chofer.rides.index') }}" class="btn btn-outline-primary btn-sm">
                             Ver rides publicados
                         </a>
@@ -66,12 +64,11 @@
                     </p>
 
                     <div class="d-flex flex-wrap gap-2">
-                        {{-- Por ahora solo maquetado, sin rutas definidas --}}
-                        <a href="#" class="btn btn-warning btn-sm disabled" aria-disabled="true">
-                            Ver reservas pendientes (pendiente)
+                        <a href="{{ route('chofer.reservas.pendientes') }}" class="btn btn-warning btn-sm">
+                            Ver reservas pendientes
                         </a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true">
-                            Ver todas las reservas (pendiente)
+                        <a href="{{ route('chofer.reservas.todas') }}" class="btn btn-outline-secondary btn-sm">
+                            Ver todas las reservas
                         </a>
                     </div>
                 </div>
