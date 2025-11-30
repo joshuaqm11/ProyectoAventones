@@ -5,6 +5,14 @@
 @section('content')
 <div class="auth-card">
 
+    <div class="mb-3 text-end">
+        <a href="{{ route('chofer.perfil.edit') }}" class="btn btn-outline-secondary btn-sm">
+            Editar mi perfil
+        </a>
+    </div>
+
+    @include('components.foto_perfil')
+    
     <h1 class="brand-title">Panel de Chofer</h1>
     <p class="subtitle">
         Hola, {{ auth()->user()->nombre }}. Desde aquí administras tus vehículos, rides y reservas.
