@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ActivarCuentaMail;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Procesar login (SIN validar estado)
+    // Procesar login (VALIDANDO estado)
     public function login(Request $request)
     {
         $request->validate([
@@ -29,36 +30,47 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $credentials = [
-            'correo'   => $request->correo,
-            'password' => $request->password,
-        ];
+        // Buscar usuario por correo
+        $usuario = Usuario::where('correo', $request->correo)->first();
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            /** @var \App\Models\Usuario $usuario */
-            $usuario = Auth::user();
-
-            // 🔥 Validación de estado desactivada por ahora 🔥
-            // if ($usuario->estado !== 'activo') { ... }
-
-            // Redirigir según tipo de usuario
-            if ($usuario->tipo === 'chofer') {
-                return redirect()->route('chofer.dashboard');
-            } elseif ($usuario->tipo === 'pasajero') {
-                return redirect()->route('pasajero.dashboard');
-            } elseif ($usuario->tipo === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } else {
-                // Por si existiera algún otro tipo raro
-                return redirect()->route('home');
-            }
+        // Usuario no existe o contraseña incorrecta
+        if (!$usuario || !Hash::check($request->password, $usuario->password)) {
+            return back()
+                ->withErrors(['correo' => 'Credenciales incorrectas.'])
+                ->withInput($request->only('correo'));
         }
 
-        return back()
-            ->withErrors(['correo' => 'Credenciales incorrectas.'])
-            ->withInput();
+        // Validar estado
+        if ($usuario->estado === 'pendiente') {
+            return back()
+                ->withErrors([
+                    'correo' => 'Tu cuenta está pendiente de activación. Revisa tu correo electrónico.'
+                ])
+                ->withInput($request->only('correo'));
+        }
+
+        if ($usuario->estado === 'inactivo') {
+            return back()
+                ->withErrors([
+                    'correo' => 'Tu cuenta está inactiva. Contacta al administrador.'
+                ])
+                ->withInput($request->only('correo'));
+        }
+
+        // Estado ACTIVO → puede iniciar sesión
+        Auth::login($usuario);
+        $request->session()->regenerate();
+
+        // Redirigir según tipo de usuario
+        if ($usuario->tipo === 'chofer') {
+            return redirect()->route('chofer.dashboard');
+        } elseif ($usuario->tipo === 'pasajero') {
+            return redirect()->route('pasajero.dashboard');
+        } elseif ($usuario->tipo === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('home');
+        }
     }
 
     // Cerrar sesión
@@ -110,14 +122,15 @@ class AuthController extends Controller
             'telefono'         => $request->telefono,
             'password'         => Hash::make($request->password),
             'tipo'             => 'chofer',
-            'estado'           => 'pendiente',
-            'token_activacion' => $token,
+            'estado'           => 'pendiente',      // <<< Estado inicial
+            'token_activacion' => $token,           // <<< Token para el enlace
         ]);
 
-        // Mail::to($usuario->correo)->send(new \App\Mail\ActivarCuentaMail($usuario));
+        // Enviar correo de activación
+        Mail::to($usuario->correo)->send(new ActivarCuentaMail($usuario));
 
         return redirect()->route('login')
-            ->with('status', 'Registro exitoso. (Por ahora puedes iniciar sesión sin activar el correo).');
+            ->with('status', 'Registro exitoso. Revisa tu correo para activar la cuenta.');
     }
 
     // Guardar pasajero
@@ -144,14 +157,15 @@ class AuthController extends Controller
             'telefono'         => $request->telefono,
             'password'         => Hash::make($request->password),
             'tipo'             => 'pasajero',
-            'estado'           => 'pendiente',
-            'token_activacion' => $token,
+            'estado'           => 'pendiente',      // <<< Estado inicial
+            'token_activacion' => $token,           // <<< Token para el enlace
         ]);
 
-        // Mail::to($usuario->correo)->send(new \App\Mail\ActivarCuentaMail($usuario));
+        // Enviar correo de activación
+        Mail::to($usuario->correo)->send(new ActivarCuentaMail($usuario));
 
         return redirect()->route('login')
-            ->with('status', 'Registro exitoso. (Por ahora puedes iniciar sesión sin activar el correo).');
+            ->with('status', 'Registro exitoso. Revisa tu correo para activar la cuenta.');
     }
 
     // ==========================
@@ -160,7 +174,13 @@ class AuthController extends Controller
 
     public function activarCuenta($token)
     {
-        $usuario = Usuario::where('token_activacion', $token)->firstOrFail();
+        $usuario = Usuario::where('token_activacion', $token)->first();
+
+        if (!$usuario) {
+            return redirect()
+                ->route('login')
+                ->with('status', 'El enlace de activación no es válido o ya fue utilizado.');
+        }
 
         $usuario->estado = 'activo';
         $usuario->token_activacion = null;
