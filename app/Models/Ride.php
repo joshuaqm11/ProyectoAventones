@@ -30,4 +30,10 @@ class Ride extends Model
     {
         return $this->belongsTo(Vehiculo::class, 'vehiculo_id');
     }
+    
+    public function chofer()
+    {
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }   
+
 }

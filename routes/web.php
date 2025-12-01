@@ -199,7 +199,11 @@ Route::middleware(['auth', 'rol:admin'])
 
         Route::post('/usuarios/{usuario}/toggle-estado', [AdminUsuarioController::class, 'toggleEstado'])
             ->name('usuarios.toggle-estado');
-
+            
+          // Instrucciones para el script de reservas pendientes
+        Route::get('/reservas/instrucciones', function () {
+            return view('admin.reservas_instrucciones');
+        })->name('reservas.instrucciones');   
     });
 
     
