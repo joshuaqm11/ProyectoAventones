@@ -8,8 +8,7 @@ use App\Http\Controllers\PasajeroReservaController;
 use App\Http\Controllers\ChoferReservaController;
 use App\Http\Controllers\AdminUsuarioController;
 use App\Http\Controllers\ProfileController;
-
-
+use App\Http\Controllers\AdminAdminController;
 
 // =============================
 // AUTH / LOGIN
@@ -35,19 +34,19 @@ Route::post('/registro/chofer', [AuthController::class, 'registerChofer'])->name
 Route::get('/registro/pasajero', [AuthController::class, 'showRegisterPasajero'])->name('registro.pasajero');
 Route::post('/registro/pasajero', [AuthController::class, 'registerPasajero'])->name('registro.pasajero.post');
 
-// Activación de cuenta (la lógica ya la tienes en el controlador)
+// Activación de cuenta
 Route::get('/activar/{token}', [AuthController::class, 'activarCuenta'])->name('activar');
 
 // =============================
 // PÁGINA PÚBLICA DE RIDES
 // =============================
+
 Route::get('/rides-publicos', [PasajeroReservaController::class, 'publicos'])
     ->name('rides.publicos');
 
 // =============================
 // DASHBOARD CHOFER + VEHÍCULOS + RIDES
 // =============================
-
 
 Route::middleware(['auth', 'rol:chofer'])
     ->prefix('chofer')
@@ -65,17 +64,11 @@ Route::middleware(['auth', 'rol:chofer'])
         Route::post('/perfil/editar', [ProfileController::class, 'update'])
             ->name('perfil.update');
 
-        // Dashboard principal del chofer
-        Route::get('/dashboard', function () {
-            return view('chofer.dashboard');
-        })->name('dashboard');
-
         // --------- VEHÍCULOS (CRUD) ---------
-        // Lista
         Route::get('/vehiculos', [VehiculoController::class, 'index'])
             ->name('vehiculos.index');
 
-              // --------- RESERVAS DE MIS RIDES (CHOFER) ---------
+        // RESERVAS DE MIS RIDES (CHOFER)
         Route::get('/reservas/pendientes', [ChoferReservaController::class, 'pendientes'])
             ->name('reservas.pendientes');
 
@@ -89,24 +82,23 @@ Route::middleware(['auth', 'rol:chofer'])
         Route::post('/reservas/{reserva}/rechazar', [ChoferReservaController::class, 'rechazar'])
             ->name('reservas.rechazar');
 
-    
-        // Form crear
+        // Form crear vehículo
         Route::get('/vehiculos/create', [VehiculoController::class, 'create'])
             ->name('vehiculos.create');
 
-        // Guardar nuevo
+        // Guardar nuevo vehículo
         Route::post('/vehiculos', [VehiculoController::class, 'store'])
             ->name('vehiculos.store');
 
-        // Form editar
+        // Form editar vehículo
         Route::get('/vehiculos/{vehiculo}/edit', [VehiculoController::class, 'edit'])
             ->name('vehiculos.edit');
 
-        // Actualizar
+        // Actualizar vehículo
         Route::put('/vehiculos/{vehiculo}', [VehiculoController::class, 'update'])
             ->name('vehiculos.update');
 
-        // Eliminar
+        // Eliminar vehículo
         Route::delete('/vehiculos/{vehiculo}', [VehiculoController::class, 'destroy'])
             ->name('vehiculos.destroy');
 
@@ -119,16 +111,14 @@ Route::middleware(['auth', 'rol:chofer'])
         Route::delete('/rides/{ride}', [RideController::class, 'destroy'])->name('rides.destroy');
     });
 
-
-
 // =============================
 // DASHBOARD PASAJERO
 // =============================
 
-        Route::middleware(['auth', 'rol:pasajero'])
-        ->prefix('pasajero')
-        ->name('pasajero.')
-        ->group(function () {
+Route::middleware(['auth', 'rol:pasajero'])
+    ->prefix('pasajero')
+    ->name('pasajero.')
+    ->group(function () {
 
         Route::get('/dashboard', function () {
             return view('pasajero.dashboard');
@@ -140,9 +130,6 @@ Route::middleware(['auth', 'rol:chofer'])
 
         Route::post('/perfil/editar', [ProfileController::class, 'update'])
             ->name('perfil.update');
-
-        // Dashboard principal del pasajero
-        Route::view('/dashboard', 'pasajero.dashboard')->name('dashboard');
 
         // Buscar rides disponibles
         Route::get('/rides', [PasajeroReservaController::class, 'buscarRides'])
@@ -165,12 +152,9 @@ Route::middleware(['auth', 'rol:chofer'])
             ->name('reservas.cancelar');
     });
 
-
 // =============================
 // DASHBOARD ADMIN
 // =============================
-
-use App\Http\Controllers\AdminAdminController;
 
 Route::middleware(['auth', 'rol:admin'])
     ->prefix('admin')
@@ -181,33 +165,32 @@ Route::middleware(['auth', 'rol:admin'])
             return view('admin.dashboard');
         })->name('dashboard');
 
+        // ADMINADMINCONTROLLER (si lo sigues usando para algo extra)
         Route::get('/admins', [AdminAdminController::class, 'index'])->name('admins.index');
         Route::get('/admins/create', [AdminAdminController::class, 'create'])->name('admins.create');
         Route::post('/admins', [AdminAdminController::class, 'store'])->name('admins.store');
 
+        // USUARIOS (ADMINUSUARIOCONTROLLER)
         Route::get('/usuarios', [AdminUsuarioController::class, 'index'])->name('usuarios.index');
+        Route::get('/usuarios/ver', [AdminUsuarioController::class, 'ver'])->name('usuarios.ver');
         Route::get('/usuarios/estado', [AdminUsuarioController::class, 'index'])->name('usuarios.estado');
-        Route::post('/usuarios/{usuario}/toggle-estado', [AdminUsuarioController::class, 'toggleEstado'])->name('usuarios.toggle-estado');
 
-        // Vista SOLO PARA VER usuarios
-        Route::get('/usuarios/ver', [AdminUsuarioController::class, 'ver'])
-            ->name('usuarios.ver');
-
-        // Vista para activar / desactivar
-        Route::get('/usuarios', [AdminUsuarioController::class, 'index'])
-            ->name('usuarios.index');
-
+        // Cambiar estado activo/inactivo
         Route::post('/usuarios/{usuario}/toggle-estado', [AdminUsuarioController::class, 'toggleEstado'])
             ->name('usuarios.toggle-estado');
-            
-          // Instrucciones para el script de reservas pendientes
+
+        // Crear administrador (usa las validaciones nuevas)
+        Route::get('/usuarios/create', [AdminUsuarioController::class, 'create'])
+            ->name('usuarios.create');
+
+        Route::post('/usuarios', [AdminUsuarioController::class, 'store'])
+            ->name('usuarios.store');
+
+        // Instrucciones para el script de reservas pendientes
         Route::get('/reservas/instrucciones', function () {
             return view('admin.reservas_instrucciones');
-        })->name('reservas.instrucciones');   
+        })->name('reservas.instrucciones');
     });
-
-    
-
 
 // =============================
 // HOME GENÉRICO
