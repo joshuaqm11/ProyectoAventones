@@ -23,6 +23,18 @@
 
                 <div class="card-body">
 
+                    {{-- ALERTA GENERAL DE ERRORES --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <strong>Ocurrieron algunos errores:</strong>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <form action="{{ route('chofer.vehiculos.update', $vehiculo->id) }}" 
                           method="POST" 
                           enctype="multipart/form-data">
@@ -32,49 +44,106 @@
                         <!-- PLACA -->
                         <div class="mb-3">
                             <label class="form-label">Placa</label>
-                            <input type="text" name="placa" class="form-control"
-                                   value="{{ old('placa', $vehiculo->placa) }}" required>
+                            <input type="text"
+                                   name="placa"
+                                   class="form-control @error('placa') is-invalid @enderror"
+                                   value="{{ old('placa', $vehiculo->placa) }}"
+                                   required
+                                   maxlength="10"
+                                   oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g,'');">
+                            @error('placa')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- MARCA -->
                         <div class="mb-3">
                             <label class="form-label">Marca</label>
-                            <input type="text" name="marca" class="form-control"
-                                   value="{{ old('marca', $vehiculo->marca) }}" required>
+                            <input type="text"
+                                   name="marca"
+                                   class="form-control @error('marca') is-invalid @enderror"
+                                   value="{{ old('marca', $vehiculo->marca) }}"
+                                   required>
+                            @error('marca')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- MODELO -->
                         <div class="mb-3">
                             <label class="form-label">Modelo</label>
-                            <input type="text" name="modelo" class="form-control"
-                                   value="{{ old('modelo', $vehiculo->modelo) }}" required>
+                            <input type="text"
+                                   name="modelo"
+                                   class="form-control @error('modelo') is-invalid @enderror"
+                                   value="{{ old('modelo', $vehiculo->modelo) }}"
+                                   required>
+                            @error('modelo')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- AÑO -->
                         <div class="mb-3">
                             <label class="form-label">Año</label>
-                            <input type="number" name="anio" class="form-control"
-                                   value="{{ old('anio', $vehiculo->anio) }}" required>
+                            <input type="number"
+                                   name="anio"
+                                   class="form-control @error('anio') is-invalid @enderror"
+                                   value="{{ old('anio', $vehiculo->anio) }}"
+                                   required>
+                            @error('anio')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- COLOR -->
                         <div class="mb-3">
                             <label class="form-label">Color</label>
-                            <input type="text" name="color" class="form-control"
-                                   value="{{ old('color', $vehiculo->color) }}" required>
+                            <input type="text"
+                                   name="color"
+                                   class="form-control @error('color') is-invalid @enderror"
+                                   value="{{ old('color', $vehiculo->color) }}"
+                                   required>
+                            @error('color')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- CAPACIDAD -->
                         <div class="mb-3">
                             <label class="form-label">Capacidad</label>
-                            <input type="number" name="capacidad" class="form-control"
-                                   value="{{ old('capacidad', $vehiculo->capacidad) }}" required>
+                            <input type="number"
+                                   name="capacidad"
+                                   class="form-control @error('capacidad') is-invalid @enderror"
+                                   value="{{ old('capacidad', $vehiculo->capacidad) }}"
+                                   required>
+                            @error('capacidad')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- FOTO -->
                         <div class="mb-3">
                             <label class="form-label">Fotografía (opcional)</label>
-                            <input type="file" name="fotografia" class="form-control">
+                            <input type="file"
+                                   name="fotografia"
+                                   class="form-control @error('fotografia') is-invalid @enderror">
+                            @error('fotografia')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
 
                         <!-- FOTO ACTUAL -->

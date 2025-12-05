@@ -27,25 +27,35 @@ class AuthController extends Controller
         $request->validate([
             'correo'   => 'required|email',
             'password' => 'required',
+        ], [
+            'correo.required'   => 'El correo electrónico es obligatorio.',
+            'correo.email'      => 'Ingresa un correo electrónico válido.',
+            'password.required' => 'La contraseña es obligatoria.',
         ]);
 
         $usuario = Usuario::where('correo', $request->correo)->first();
 
         if (!$usuario || !Hash::check($request->password, $usuario->password)) {
             return back()
-                ->withErrors(['correo' => 'Credenciales incorrectas.'])
+                ->withErrors([
+                    'correo' => 'Credenciales incorrectas. Verifica tu correo o contraseña.',
+                ])
                 ->withInput($request->only('correo'));
         }
 
         if ($usuario->estado === 'pendiente') {
             return back()
-                ->withErrors(['correo' => 'Tu cuenta está pendiente de activación. Revisa tu correo electrónico.'])
+                ->withErrors([
+                    'correo' => 'Tu cuenta aún no está confirmada. Por favor revisa tu correo electrónico para activarla.',
+                ])
                 ->withInput($request->only('correo'));
         }
 
         if ($usuario->estado === 'inactivo') {
             return back()
-                ->withErrors(['correo' => 'Tu cuenta está inactiva. Contacta al administrador.'])
+                ->withErrors([
+                    'correo' => 'Tu cuenta está inactiva. Contacta con un administrador para más información.',
+                ])
                 ->withInput($request->only('correo'));
         }
 
@@ -109,7 +119,7 @@ class AuthController extends Controller
 
             'correo'           => [
                 'required',
-                'email',
+                'email:rfc,dns',
                 'unique:usuarios,correo',
             ],
 
@@ -124,6 +134,29 @@ class AuthController extends Controller
                 'confirmed',
                 'min:8',
             ],
+        ], [
+            'nombre.required'            => 'El nombre es obligatorio.',
+            'apellido.required'          => 'El apellido es obligatorio.',
+
+            'cedula.required'            => 'La cédula es obligatoria.',
+            'cedula.digits'              => 'La cédula debe tener exactamente 9 dígitos numéricos.',
+            'cedula.unique'              => 'Esta cédula ya está registrada para un chofer.',
+
+            'fecha_nacimiento.required'  => 'Debes ingresar tu fecha de nacimiento.',
+            'fecha_nacimiento.date'      => 'Ingresa una fecha de nacimiento válida.',
+            'fecha_nacimiento.before_or_equal' => 'Debes ser mayor de 18 años para registrarte como chofer.',
+
+            'correo.required'            => 'El correo electrónico es obligatorio.',
+            'correo.email'               => 'Ingresa un correo electrónico válido.',
+            'correo.unique'              => 'Este correo ya está registrado en el sistema.',
+
+            'telefono.required'          => 'El número de teléfono es obligatorio.',
+            'telefono.digits'            => 'El teléfono debe tener exactamente 8 dígitos numéricos.',
+            'telefono.unique'            => 'Este número de teléfono ya está registrado para un chofer.',
+
+            'password.required'          => 'La contraseña es obligatoria.',
+            'password.confirmed'         => 'Las contraseñas no coinciden.',
+            'password.min'               => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
 
         $token = Str::random(40);
@@ -170,7 +203,7 @@ class AuthController extends Controller
 
             'correo'           => [
                 'required',
-                'email',
+                'email:rfc,dns',
                 'unique:usuarios,correo',
             ],
 
@@ -185,6 +218,29 @@ class AuthController extends Controller
                 'confirmed',
                 'min:8',
             ],
+        ], [
+            'nombre.required'            => 'El nombre es obligatorio.',
+            'apellido.required'          => 'El apellido es obligatorio.',
+
+            'cedula.required'            => 'La cédula es obligatoria.',
+            'cedula.digits'              => 'La cédula debe tener exactamente 9 dígitos numéricos.',
+            'cedula.unique'              => 'Esta cédula ya está registrada para un pasajero.',
+
+            'fecha_nacimiento.required'  => 'Debes ingresar tu fecha de nacimiento.',
+            'fecha_nacimiento.date'      => 'Ingresa una fecha de nacimiento válida.',
+            'fecha_nacimiento.before_or_equal' => 'Debes ser mayor de 18 años para registrarte como pasajero.',
+
+            'correo.required'            => 'El correo electrónico es obligatorio.',
+            'correo.email'               => 'Ingresa un correo electrónico válido.',
+            'correo.unique'              => 'Este correo ya está registrado en el sistema.',
+
+            'telefono.required'          => 'El número de teléfono es obligatorio.',
+            'telefono.digits'            => 'El teléfono debe tener exactamente 8 dígitos numéricos.',
+            'telefono.unique'            => 'Este número de teléfono ya está registrado para un pasajero.',
+
+            'password.required'          => 'La contraseña es obligatoria.',
+            'password.confirmed'         => 'Las contraseñas no coinciden.',
+            'password.min'               => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
 
         $token = Str::random(40);
