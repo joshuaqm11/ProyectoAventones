@@ -3,7 +3,7 @@
 @section('title', 'Crear administrador')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Crear administrador</h1>
 

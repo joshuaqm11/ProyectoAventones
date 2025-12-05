@@ -3,7 +3,7 @@
 @section('title', 'Historial de reservas')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Historial de reservas</h1>
 

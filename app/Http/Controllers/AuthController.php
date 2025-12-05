@@ -109,7 +109,7 @@ class AuthController extends Controller
 
             'correo'           => [
                 'required',
-                'email:rfc,dns',
+                'email',
                 'unique:usuarios,correo',
             ],
 
@@ -170,7 +170,7 @@ class AuthController extends Controller
 
             'correo'           => [
                 'required',
-                'email:rfc,dns',
+                'email',
                 'unique:usuarios,correo',
             ],
 

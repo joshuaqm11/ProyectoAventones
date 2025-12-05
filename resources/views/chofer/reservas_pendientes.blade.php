@@ -3,7 +3,7 @@
 @section('title', 'Reservas pendientes')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Reservas pendientes de mis rides</h1>
     <p class="subtitle">

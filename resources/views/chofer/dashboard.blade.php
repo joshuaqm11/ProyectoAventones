@@ -3,7 +3,7 @@
 @section('title', 'Panel de Chofer')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <div class="mb-3 text-end">
         <a href="{{ route('chofer.perfil.edit') }}" class="btn btn-outline-secondary btn-sm">

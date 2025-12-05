@@ -3,7 +3,7 @@
 @section('title', 'Instrucciones script reservas')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Script de reservas pendientes</h1>
     <p class="subtitle">

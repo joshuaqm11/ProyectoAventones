@@ -24,7 +24,7 @@ class AuthRegistroLoginTest extends TestCase
             'cedula'                  => '123456789',
             'fecha_nacimiento'        => '1990-01-01',
             'correo'                  => 'juan@example.com',
-            'telefono'                => '8888-8888',
+            'telefono'                => '88888888',
             'password'                => 'secret123',
             'password_confirmation'   => 'secret123',
         ]);
@@ -54,7 +54,7 @@ class AuthRegistroLoginTest extends TestCase
             'cedula'           => '987654321',
             'fecha_nacimiento' => '1995-05-05',
             'correo'           => 'ana@example.com',
-            'telefono'         => '7777-7777',
+            'telefono'         => '77777777',
             'password'         => Hash::make('clave123'),
             'tipo'             => 'pasajero',
             'estado'           => 'pendiente',

@@ -3,7 +3,7 @@
 @section('title', 'Editar perfil')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     @include('components.foto_perfil')
     <h1 class="brand-title">Editar mi perfil</h1>

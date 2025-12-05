@@ -3,7 +3,7 @@
 @section('title', 'Todas las reservas')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Todas las reservas de mis rides</h1>
     <p class="subtitle">

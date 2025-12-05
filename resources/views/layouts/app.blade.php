@@ -8,6 +8,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+    
+        .page-card {
+            max-width: 900px;          
+            margin: 40px auto;        
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+        }
+
+        /* Asegurar que las tablas nunca se salgan visualmente */
+        .page-card .table-responsive {
+            margin-top: 15px;
+        }
+
+        .page-card table {
+            width: 100%;
+        }
+
+
         body {
             background: #f0f2f5;
         }

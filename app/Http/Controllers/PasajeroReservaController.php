@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PasajeroReservaController extends Controller
 {
-    // 1) Buscar rides disponibles
+    // 1) Buscar rides disponibles (vista del pasajero)
     public function buscarRides(Request $request)
     {
         $query = Ride::query();
@@ -63,24 +63,37 @@ class PasajeroReservaController extends Controller
         return back()->with('status', 'Reserva registrada correctamente.');
     }
 
-    // 3) Reservas activas
+    // 3) Reservas ACTIVAS (pendientes / aceptadas y con rides de hoy o futuros)
     public function reservasActivas()
     {
+        $hoy = now()->toDateString();
+
         $reservas = Reserva::with('ride')
             ->where('pasajero_id', Auth::id())
             ->whereIn('estado', ['pendiente', 'aceptada'])
+            ->whereHas('ride', function ($q) use ($hoy) {
+                $q->whereDate('fecha', '>=', $hoy);
+            })
             ->orderByDesc('created_at')
             ->get();
 
         return view('pasajero.reservas_activas', compact('reservas'));
     }
 
-    // 4) Historial
+    // 4) HISTORIAL (rides pasados o reservas canceladas / rechazadas / finalizadas)
     public function reservasHistorial()
     {
+        $hoy = now()->toDateString();
+
         $reservas = Reserva::with('ride')
             ->where('pasajero_id', Auth::id())
-            ->whereIn('estado', ['cancelada', 'rechazada', 'finalizada'])
+            ->where(function ($q) use ($hoy) {
+                $q->whereHas('ride', function ($sub) use ($hoy) {
+                    // rides cuya fecha ya pasó
+                    $sub->whereDate('fecha', '<', $hoy);
+                })
+                ->orWhereIn('estado', ['cancelada', 'rechazada', 'finalizada']);
+            })
             ->orderByDesc('created_at')
             ->get();
 
@@ -100,48 +113,49 @@ class PasajeroReservaController extends Controller
 
         return back()->with('status', 'Reserva cancelada.');
     }
+
+    // 6) Listado público de rides (landing / página pública)
     public function publicos(Request $request)
-{
-    $query = Ride::query();
+    {
+        $query = Ride::query();
 
-    // Filtros por origen y destino
-    if ($request->filled('origen')) {
-        $query->where('origen', 'like', '%' . $request->origen . '%');
+        // Filtros por origen y destino
+        if ($request->filled('origen')) {
+            $query->where('origen', 'like', '%' . $request->origen . '%');
+        }
+
+        if ($request->filled('destino')) {
+            $query->where('destino', 'like', '%' . $request->destino . '%');
+        }
+
+        // Orden
+        $orden = $request->get('orden', 'fecha'); // valor por defecto: fecha
+
+        switch ($orden) {
+            case 'origen':
+                $query->orderBy('origen')
+                      ->orderBy('fecha')
+                      ->orderBy('hora');
+                break;
+
+            case 'destino':
+                $query->orderBy('destino')
+                      ->orderBy('fecha')
+                      ->orderBy('hora');
+                break;
+
+            case 'fecha':
+            default:
+                $query->orderBy('fecha')
+                      ->orderBy('hora');
+                break;
+        }
+
+        $rides = $query->get();
+
+        return view('public.rides_publicos', [
+            'rides'       => $rides,
+            'ordenActual' => $orden,
+        ]);
     }
-
-    if ($request->filled('destino')) {
-        $query->where('destino', 'like', '%' . $request->destino . '%');
-    }
-
-    // Orden
-    $orden = $request->get('orden', 'fecha'); // valor por defecto: fecha
-
-    switch ($orden) {
-        case 'origen':
-            $query->orderBy('origen')
-                  ->orderBy('fecha')
-                  ->orderBy('hora');
-            break;
-
-        case 'destino':
-            $query->orderBy('destino')
-                  ->orderBy('fecha')
-                  ->orderBy('hora');
-            break;
-
-        case 'fecha':
-        default:
-            $query->orderBy('fecha')
-                  ->orderBy('hora');
-            break;
-    }
-
-    $rides = $query->get();
-
-    return view('public.rides_publicos', [
-        'rides'       => $rides,
-        'ordenActual' => $orden,
-    ]);
-}
-
 }

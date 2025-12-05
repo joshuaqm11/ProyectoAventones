@@ -8,7 +8,7 @@
 @section('title', 'Mis vehículos')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Mis vehículos</h1>
     <p class="subtitle">

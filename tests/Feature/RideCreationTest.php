@@ -23,7 +23,7 @@ class RideCreationTest extends TestCase
             'cedula'           => '111222333',
             'fecha_nacimiento' => '1988-02-10',
             'correo'           => 'carlos@example.com',
-            'telefono'         => '8888-0000',
+            'telefono'         => '88880000',
             'password'         => Hash::make('password123'),
             'tipo'             => 'chofer',
             'estado'           => 'activo',

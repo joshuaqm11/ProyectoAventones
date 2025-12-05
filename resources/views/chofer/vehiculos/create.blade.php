@@ -3,7 +3,7 @@
 @section('title', 'Registrar vehículo')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Registrar vehículo</h1>
 

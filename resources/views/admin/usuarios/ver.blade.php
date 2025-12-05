@@ -3,7 +3,7 @@
 @section('title', 'Usuarios del sistema')
 
 @section('content')
-<div class="auth-card">
+<div class="page-card">
 
     <h1 class="brand-title">Usuarios del sistema</h1>
     <p class="subtitle">Lista completa de usuarios registrados.</p>
