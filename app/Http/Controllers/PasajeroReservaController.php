@@ -129,24 +129,25 @@ class PasajeroReservaController extends Controller
         }
 
         // Orden
-        $orden = $request->get('orden', 'fecha'); // valor por defecto: fecha
+        $orden = $request->get('orden', 'fecha'); // campo por defecto
+        $dir   = $request->get('dir', 'asc');     // dirección por defecto
 
         switch ($orden) {
             case 'origen':
-                $query->orderBy('origen')
+                $query->orderBy('origen', $dir)
                       ->orderBy('fecha')
                       ->orderBy('hora');
                 break;
 
             case 'destino':
-                $query->orderBy('destino')
+                $query->orderBy('destino', $dir)
                       ->orderBy('fecha')
                       ->orderBy('hora');
                 break;
 
             case 'fecha':
             default:
-                $query->orderBy('fecha')
+                $query->orderBy('fecha', $dir)
                       ->orderBy('hora');
                 break;
         }
@@ -156,6 +157,7 @@ class PasajeroReservaController extends Controller
         return view('public.rides_publicos', [
             'rides'       => $rides,
             'ordenActual' => $orden,
+            'dirActual'   => $dir,
         ]);
     }
 }

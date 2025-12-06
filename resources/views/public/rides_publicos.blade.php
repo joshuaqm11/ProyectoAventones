@@ -26,36 +26,66 @@
         @endauth
     </div>
 
-    {{-- FILTROS Y ORDEN --}}
-    <form method="GET" class="row g-2 mb-3">
+    {{-- Info del orden actual --}}
+    @if(isset($ordenActual) && isset($dirActual))
+    <div class="alert alert-secondary small text-center mb-3">
+        Ordenando por:
+        <strong>
+            @switch($ordenActual)
+                @case('origen') Origen @break
+                @case('destino') Destino @break
+                @default Fecha
+            @endswitch
+        </strong>
+        en orden
+        <strong>
+            {{ $dirActual == 'asc' ? 'ascendente' : 'descendente' }}
+        </strong>
+    </div>
+@endif
 
-        <div class="col-md-4">
-            <input name="origen"
-                   class="form-control"
-                   placeholder="Origen"
-                   value="{{ request('origen') }}">
-        </div>
+   {{-- FILTROS Y ORDEN --}}
+<form method="GET" class="row g-2 mb-3 align-items-end">
 
-        <div class="col-md-4">
-            <input name="destino"
-                   class="form-control"
-                   placeholder="Destino"
-                   value="{{ request('destino') }}">
-        </div>
+    <div class="col-md-3">
+        <label class="form-label small">Origen</label>
+        <input name="origen"
+               class="form-control"
+               placeholder="Ej: San José"
+               value="{{ request('origen') }}">
+    </div>
 
-        <div class="col-md-3">
-            <select name="orden" class="form-select">
-                <option value="fecha"   {{ request('orden') === 'fecha' ? 'selected' : '' }}>Ordenar por fecha</option>
-                <option value="origen"  {{ request('orden') === 'origen' ? 'selected' : '' }}>Ordenar por origen</option>
-                <option value="destino" {{ request('orden') === 'destino' ? 'selected' : '' }}>Ordenar por destino</option>
-            </select>
-        </div>
+    <div class="col-md-3">
+        <label class="form-label small">Destino</label>
+        <input name="destino"
+               class="form-control"
+               placeholder="Ej: Alajuela"
+               value="{{ request('destino') }}">
+    </div>
 
-        <div class="col-md-1 d-grid">
-            <button class="btn btn-primary btn-sm">Filtrar</button>
-        </div>
+    <div class="col-md-3">
+        <label class="form-label small">Ordenar por</label>
+        <select name="orden" class="form-select">
+            <option value="fecha"   {{ $ordenActual == 'fecha' ? 'selected' : '' }}>Fecha</option>
+            <option value="origen"  {{ $ordenActual == 'origen' ? 'selected' : '' }}>Origen</option>
+            <option value="destino" {{ $ordenActual == 'destino' ? 'selected' : '' }}>Destino</option>
+        </select>
+    </div>
 
-    </form>
+    <div class="col-md-2">
+        <label class="form-label small">Dirección</label>
+        <select name="dir" class="form-select">
+            <option value="asc"  {{ $dirActual == 'asc' ? 'selected' : '' }}>Ascendente</option>
+            <option value="desc" {{ $dirActual == 'desc' ? 'selected' : '' }}>Descendente</option>
+        </select>
+    </div>
+
+    <div class="col-md-1 d-grid">
+        <button class="btn btn-primary btn-sm">Filtrar</button>
+    </div>
+
+</form>
+
 
     {{-- RESULTADOS --}}
     @if($rides->isEmpty())
@@ -64,7 +94,7 @@
         </div>
     @else
         <div class="table-responsive">
-            <table class="table table-striped table-sm align-middle">
+            <table class="table table-striped table-sm align-middle mb-0">
                 <thead>
                     <tr>
                         <th>Origen</th>
